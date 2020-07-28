@@ -4,9 +4,38 @@ body {
   background-color: #1b263b;
 }
 
-nav h1{
-    color: white;
-    font-size: 1em;
-    margin: 2em;
-    font-weight: normal;
+nav {
+  margin: 0;
+  padding: 2em;
+}
+
+nav h1 {
+  color: white;
+  font-size: 1em;
+  font-weight: normal;
+}
+
+div.performance {
+  margin: 1em;
+  display: inline-block;
+  background-color: #ee4266;
+  border-radius: 5px;
+  box-shadow: 0 0px 3.6px -69px rgba(0, 0, 0, 0.022),
+    0 0px 10px -69px rgba(0, 0, 0, 0.031),
+    0 0px 24.1px -69px rgba(0, 0, 0, 0.041),
+    0 0px 80px -69px rgba(0, 0, 0, 0.07);
+}
+
+.title-set {
+  padding: 1.8em;
+}
+
+.sub-title {
+  color: aliceblue;
+}
+
+.title {
+  color: aliceblue;
+  font-size: 1.5em;
+  font-weight: normal;
 }
