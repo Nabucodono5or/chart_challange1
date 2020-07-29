@@ -18,6 +18,9 @@ csv(
 });
 
 function lineChart(incomingData) {
+  let dadosMedidos = medindoVendasAnuais(incomingData);
+  console.log(dadosMedidos);
+
   let minimoMaximoAnoDeLancamento = extent(incomingData, (d) => {
     return +d.Year_of_Release;
   });
@@ -68,4 +71,25 @@ function lineChart(incomingData) {
     })
     .attr("r", 5)
     .attr("fill", "white");
+}
+
+function medindoVendasAnuais(data) {
+  let dadosMedidos = [];
+  data.forEach((element) => {
+    let resultado;
+    resultado = dadosMedidos.find((el) => {
+      return el.ano == +element.Year_of_Release;
+    });
+
+    if (resultado) {
+      resultado.total += +element.Global_Sales;
+    } else if (!isNaN(+element.Year_of_Release)) {
+      resultado = {};
+      resultado.total = +element.Global_Sales;
+      resultado.ano = +element.Year_of_Release;
+      dadosMedidos.push(resultado);
+    }
+  });
+
+  return dadosMedidos;
 }
