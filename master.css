@@ -16,6 +16,7 @@ nav h1 {
 }
 
 div.performance {
+  /* padding: 1em; */
   margin: 1em;
   display: inline-block;
   background-color: #ee4266;
@@ -38,4 +39,14 @@ div.performance {
   color: aliceblue;
   font-size: 1.5em;
   font-weight: normal;
+}
+
+.line-graph {
+  margin: 1em;
+  margin-top: 0;
+}
+
+.line-group {
+  color: aliceblue;
+  font-size: 0.8em;
 }
