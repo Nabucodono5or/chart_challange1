@@ -13,7 +13,6 @@ select("div.chart")
 csv(
   require("./data/189386_422697_bundle_archive/Video_Games_Sales_as_at_22_Dec_2016.csv")
 ).then((data) => {
-  console.log(data);
   lineChart(data);
 });
 
@@ -21,12 +20,12 @@ function lineChart(incomingData) {
   let dadosMedidos = medindoVendasAnuais(incomingData);
   console.log(dadosMedidos);
 
-  let minimoMaximoAnoDeLancamento = extent(incomingData, (d) => {
-    return +d.Year_of_Release;
+  let minimoMaximoAnoDeLancamento = extent(dadosMedidos, (d) => {
+    return d.ano;
   });
 
-  let minimoMaximoDeVendas = extent(incomingData, (d) => {
-    return +d.Global_Sales;
+  let minimoMaximoDeVendas = extent(dadosMedidos, (d) => {
+    return d.total;
   });
 
   let xScale = scaleLinear()
@@ -56,18 +55,15 @@ function lineChart(incomingData) {
 
   select("svg.line-graph")
     .selectAll("circle")
-    .data(incomingData)
+    .data(dadosMedidos)
     .enter()
     .append("circle")
     .attr("class", "scatterplot")
     .attr("cx", (d) => {
-      if (isNaN(+d.Year_of_Release)) {
-        return xScale(1980);
-      }
-      return xScale(+d.Year_of_Release);
+      return xScale(d.ano);
     })
     .attr("cy", (d) => {
-      return yScale(+d.Global_Sales);
+      return yScale(d.total);
     })
     .attr("r", 5)
     .attr("fill", "white");
