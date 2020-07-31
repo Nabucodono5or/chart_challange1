@@ -4,6 +4,7 @@ import { extent } from "d3-array";
 import { scaleLinear } from "d3-scale";
 import { axisLeft, axisRight, axisBottom, axisTop } from "d3-axis";
 import { line, curveNatural } from "d3-shape";
+import { randomLogNormal } from "d3";
 
 select("div.chart")
   .append("svg")
@@ -32,19 +33,10 @@ function lineChart(incomingData) {
   let xScale = scaleLinear()
     .domain(minimoMaximoAnoDeLancamento)
     .range([90, 720]);
-
   let yScale = scaleLinear().domain(minimoMaximoDeVendas).range([280, 20]);
-
   let xAxis = axisBottom(xScale).tickSize(-280).tickPadding(10);
   let yAxis = axisLeft(yScale).tickSize(0);
-
-  let globalSales = line()
-    .x((d) => {
-      return xScale(d.ano);
-    })
-    .y((d) => {
-      return yScale(d.total);
-    });
+  let globalSales = globalSalesLine(xScale, yScale);
 
   globalSales.curve(curveNatural);
 
@@ -79,10 +71,52 @@ function lineChart(incomingData) {
     .attr("r", 5)
     .attr("fill", "white");
 
+  desenhandoLinha(dadosMedidos, globalSales);
+
+  // criar os eventos
+
+  select(".na-sales").on("click", (d) => {
+    northAmericanSales(dadosMedidos, xScale, yScale);
+  });
+
+  select(".global-sales").on("click", (d) => {
+    globalSalesData(dadosMedidos, xScale, yScale);
+  });
+}
+
+function globalSalesLine(xScale, yScale) {
+  let globalSales = line()
+    .x((d) => {
+      return xScale(d.ano);
+    })
+    .y((d) => {
+      return yScale(d.total);
+    });
+
+  return globalSales;
+}
+
+function naSalesLine(xScale, yScale) {
+  let naSales = line()
+    .x((d) => {
+      return xScale(d.ano);
+    })
+    .y((d) => {
+      return yScale(d.na);
+    });
+
+  return naSales;
+}
+
+function desenhandoLinha(dadosMedidos, sales) {
   select("svg.line-graph")
     .append("path")
     .attr("class", "line-globalsales")
-    .attr("d", globalSales(dadosMedidos));
+    .attr("d", sales(dadosMedidos));
+}
+
+function alterandoLinha(dadosMedidos, sales) {
+  select("path").transition().duration(1000).attr("d", sales(dadosMedidos));
 }
 
 function medindoVendasAnuais(data) {
@@ -95,10 +129,14 @@ function medindoVendasAnuais(data) {
 
     if (resultado) {
       resultado.total += +element.Global_Sales;
+      resultado.na += +element.NA_Sales;
+      resultado.eu += +element.EU_Sales;
     } else if (!isNaN(+element.Year_of_Release)) {
       resultado = {};
       resultado.total = +element.Global_Sales;
       resultado.ano = +element.Year_of_Release;
+      resultado.na = +element.NA_Sales;
+      resultado.eu = +element.EU_Sales;
       dadosMedidos.push(resultado);
     }
   });
@@ -107,4 +145,32 @@ function medindoVendasAnuais(data) {
     return a.ano > b.ano;
   });
   return dadosMedidos;
+}
+
+function northAmericanSales(incomingData, xScale, yScale) {
+  select("svg.line-graph")
+    .selectAll("circle.scatterplot")
+    .transition()
+    .duration(1000)
+    .attr("cy", (d) => {
+      return yScale(d.na);
+    });
+
+  let naSales = naSalesLine(xScale, yScale);
+
+  alterandoLinha(incomingData, naSales);
+}
+
+function globalSalesData(incomingData, xScale, yScale) {
+  select("svg.line-graph")
+    .selectAll("circle.scatterplot")
+    .transition()
+    .duration(1000)
+    .attr("cy", (d) => {
+      return yScale(d.total);
+    });
+
+  let globalSales = globalSalesLine(xScale, yScale);
+
+  alterandoLinha(incomingData, globalSales);
 }
