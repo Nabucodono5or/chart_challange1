@@ -3,6 +3,7 @@ import { csv } from "d3-fetch";
 import { extent } from "d3-array";
 import { scaleLinear } from "d3-scale";
 import { axisLeft, axisRight, axisBottom, axisTop } from "d3-axis";
+import { line, curveNatural } from "d3-shape";
 
 select("div.chart")
   .append("svg")
@@ -37,6 +38,16 @@ function lineChart(incomingData) {
   let xAxis = axisBottom(xScale).tickSize(-280).tickPadding(10);
   let yAxis = axisLeft(yScale).tickSize(0);
 
+  let globalSales = line()
+    .x((d) => {
+      return xScale(d.ano);
+    })
+    .y((d) => {
+      return yScale(d.total);
+    });
+
+  globalSales.curve(curveNatural);
+
   select("svg.line-graph")
     .append("g")
     .attr("class", "line-group")
@@ -67,6 +78,11 @@ function lineChart(incomingData) {
     })
     .attr("r", 5)
     .attr("fill", "white");
+
+  select("svg.line-graph")
+    .append("path")
+    .attr("class", "line-globalsales")
+    .attr("d", globalSales(dadosMedidos));
 }
 
 function medindoVendasAnuais(data) {
@@ -87,5 +103,8 @@ function medindoVendasAnuais(data) {
     }
   });
 
+  dadosMedidos = dadosMedidos.sort((a, b) => {
+    return a.ano > b.ano;
+  });
   return dadosMedidos;
 }

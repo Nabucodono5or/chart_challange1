@@ -50,3 +50,9 @@ div.performance {
   color: aliceblue;
   font-size: 0.8em;
 }
+
+.line-globalsales {
+  stroke-width: 3px;
+  stroke: aliceblue;
+  fill: none;
+}
