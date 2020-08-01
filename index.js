@@ -12,6 +12,24 @@ select("div.chart")
   .attr("height", "300px")
   .attr("width", "800px");
 
+select("div.chart-line-small")
+  .append("svg")
+  .attr("class", "line-graph")
+  .attr("height", "200px")
+  .attr("width", "220px");
+
+select("div.char-histogram")
+  .append("svg")
+  .attr("class", "line-graph")
+  .attr("height", "200px")
+  .attr("width", "220px");
+
+select("div.chart-line-small-second")
+  .append("svg")
+  .attr("class", "line-graph")
+  .attr("height", "200px")
+  .attr("width", "220px");
+
 csv(
   require("./data/189386_422697_bundle_archive/Video_Games_Sales_as_at_22_Dec_2016.csv")
 ).then((data) => {

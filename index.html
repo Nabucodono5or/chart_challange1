@@ -3,32 +3,59 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="master.css">
+    <link rel="stylesheet" href="master.css" />
     <title>Conjunto de estatísticas</title>
   </head>
   <body>
     <nav><h1>DASHBOARD</h1></nav>
     <main>
       <div class="performance">
-          <div class="title-set">
-            <div class="text-title">
-              <small class="sub-title">Total Shipments</small>
-              <h2 class="title">Sales Games</h2>
-            </div>
-            <div class="buttons">
-              <div class="button global-sales">Global Sales</div>
-              <div class="button na-sales">North American Sales</div>
-              <div class="button eu-sales">European Sales</div>
-            </div>
+        <div class="title-set">
+          <div class="text-title">
+            <small class="sub-title">Total Shipments</small>
+            <h2 class="title">Sales Games</h2>
           </div>
-          <div class="chart">
-              
+          <div class="buttons">
+            <div class="button global-sales">Global Sales</div>
+            <div class="button na-sales">North American Sales</div>
+            <div class="button eu-sales">European Sales</div>
           </div>
+        </div>
+        <div class="chart"></div>
       </div>
-      <div class="total-shipments"></div>
-      <div class="daily-sales"></div>
-      <div class="completed-tasks"></div>
     </main>
-    <script src="index.js"></script>
+
+    <section>
+      <div class="small-block total-shipments">
+        <div class="title-set">
+          <div class="text-title">
+            <small class="sub-title">Total Shipments</small>
+            <h2 class="title">Valor</h2>
+          </div>
+        </div>
+        <div class="chart-line-small"></div>
+      </div>
+
+      <div class="small-block daily-sales">
+        <div class="title-set">
+          <div class="text-title">
+            <small class="sub-title">Daily Sales</small>
+            <h2 class="title">Valor</h2>
+          </div>
+        </div>
+        <div class="char-histogram"></div>
+      </div>
+
+      <div class="small-block completed-tasks">
+        <div class="title-set">
+          <div class="text-title">
+            <small class="sub-title">Completed Tasks</small>
+            <h2 class="title">Valor</h2>
+          </div>
+        </div>
+        <div class="chart-line-small-second"></div>
+      </div>
+      <script src="index.js"></script>
+    </section>
   </body>
 </html>

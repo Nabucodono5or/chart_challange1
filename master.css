@@ -77,3 +77,20 @@ div.performance {
   stroke: aliceblue;
   fill: none;
 }
+
+section {
+  width: 825px;
+  display: flex;
+  justify-content: space-between;
+  padding: 1em;
+}
+
+.small-block {
+  display: inline-block;
+  background-color: #ee4266;
+  border-radius: 5px;
+  box-shadow: 0 0px 3.6px -69px rgba(0, 0, 0, 0.022),
+    0 0px 10px -69px rgba(0, 0, 0, 0.031),
+    0 0px 24.1px -69px rgba(0, 0, 0, 0.041),
+    0 0px 80px -69px rgba(0, 0, 0, 0.07);
+}
