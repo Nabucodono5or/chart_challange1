@@ -67,6 +67,11 @@ div.performance {
   font-weight: normal;
 }
 
+.text-title {
+  display: flex;
+  flex-direction: column;
+}
+
 .line-graph {
   margin: 1em;
   margin-top: 0;
@@ -99,4 +104,13 @@ section {
     0 0px 10px -69px rgba(0, 0, 0, 0.031),
     0 0px 24.1px -69px rgba(0, 0, 0, 0.041),
     0 0px 80px -69px rgba(0, 0, 0, 0.07);
+}
+
+.publicadoras {
+  margin-top: 1em;
+}
+
+.line-every-sales {
+  fill: none;
+  stroke: aliceblue;
 }
