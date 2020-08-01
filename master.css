@@ -47,15 +47,9 @@ div.performance {
   font-weight: 600;
 }
 
-.global-sales {
+.selected {
   color: #ee4266;
   background-color: aliceblue;
-}
-
-.na-sales {
-}
-
-.eu-sales {
 }
 
 .sub-title {

@@ -77,14 +77,24 @@ function lineChart(incomingData) {
 
   select(".na-sales").on("click", (d) => {
     northAmericanSales(dadosMedidos, xScale, yScale);
+    destacandoButton(".na-sales", [".eu-sales", ".global-sales"]);
   });
 
   select(".global-sales").on("click", (d) => {
     globalSalesData(dadosMedidos, xScale, yScale);
+    destacandoButton(".global-sales", [".eu-sales", ".na-sales"]);
   });
 
   select(".eu-sales").on("click", (d) => {
     europeanSales(dadosMedidos, xScale, yScale);
+    destacandoButton(".eu-sales", [".global-sales", ".na-sales"]);
+  });
+}
+
+function destacandoButton(alvo, anteriores) {
+  select(alvo).classed("selected", true);
+  anteriores.forEach((el) => {
+    select(el).classed("selected", false);
   });
 }
 
@@ -129,6 +139,7 @@ function desenhandoLinha(dadosMedidos, sales) {
     .append("path")
     .attr("class", "line-globalsales")
     .attr("d", sales(dadosMedidos));
+  select(".global-sales").classed("selected", true);
 }
 
 function alterandoLinha(dadosMedidos, sales) {
