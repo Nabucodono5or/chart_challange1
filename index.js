@@ -20,15 +20,8 @@ csv(
 
 function lineChart(incomingData) {
   let dadosMedidos = medindoVendasAnuais(incomingData);
-  console.log(dadosMedidos);
-
-  let minimoMaximoAnoDeLancamento = extent(dadosMedidos, (d) => {
-    return d.ano;
-  });
-
-  let minimoMaximoDeVendas = extent(dadosMedidos, (d) => {
-    return d.total;
-  });
+  let minimoMaximoAnoDeLancamento = medirAnoDeLancamento(dadosMedidos);
+  let minimoMaximoDeVendas = medirTotalDeVendas(dadosMedidos);
 
   let xScale = scaleLinear()
     .domain(minimoMaximoAnoDeLancamento)
@@ -91,11 +84,98 @@ function lineChart(incomingData) {
   });
 }
 
-function destacandoButton(alvo, anteriores) {
-  select(alvo).classed("selected", true);
-  anteriores.forEach((el) => {
-    select(el).classed("selected", false);
+function medindoVendasAnuais(data) {
+  let dadosMedidos = [];
+  data.forEach((element) => {
+    let resultado;
+    resultado = dadosMedidos.find((el) => {
+      return el.ano == +element.Year_of_Release;
+    });
+
+    if (resultado) {
+      resultado.total += +element.Global_Sales;
+      resultado.na += +element.NA_Sales;
+      resultado.eu += +element.EU_Sales;
+    } else if (!isNaN(+element.Year_of_Release)) {
+      resultado = {};
+      resultado.total = +element.Global_Sales;
+      resultado.ano = +element.Year_of_Release;
+      resultado.na = +element.NA_Sales;
+      resultado.eu = +element.EU_Sales;
+      dadosMedidos.push(resultado);
+    }
   });
+
+  dadosMedidos = dadosMedidos.sort((a, b) => {
+    return a.ano > b.ano;
+  });
+  return dadosMedidos;
+}
+
+function medirAnoDeLancamento(dadosMedidos) {
+  let minimoMaximoAnoDeLancamento = extent(dadosMedidos, (d) => {
+    return d.ano;
+  });
+
+  return minimoMaximoAnoDeLancamento;
+}
+
+function medirTotalDeVendas(dadosMedidos) {
+  let minimoMaximoDeVendas = extent(dadosMedidos, (d) => {
+    return d.total;
+  });
+
+  return minimoMaximoDeVendas;
+}
+
+function desenhandoLinha(dadosMedidos, sales) {
+  select("svg.line-graph")
+    .append("path")
+    .attr("class", "line-globalsales")
+    .attr("d", sales(dadosMedidos));
+  select(".global-sales").classed("selected", true);
+}
+
+function globalSalesData(incomingData, xScale, yScale) {
+  select("svg.line-graph")
+    .selectAll("circle.scatterplot")
+    .transition()
+    .duration(1000)
+    .attr("cy", (d) => {
+      return yScale(d.total);
+    });
+
+  let globalSales = globalSalesLine(xScale, yScale);
+
+  alterandoLinha(incomingData, globalSales);
+}
+
+function northAmericanSales(incomingData, xScale, yScale) {
+  select("svg.line-graph")
+    .selectAll("circle.scatterplot")
+    .transition()
+    .duration(1000)
+    .attr("cy", (d) => {
+      return yScale(d.na);
+    });
+
+  let naSales = naSalesLine(xScale, yScale);
+
+  alterandoLinha(incomingData, naSales);
+}
+
+function europeanSales(incomingData, xScale, yScale) {
+  select("svg.line-graph")
+    .selectAll("circle.scatterplot")
+    .transition()
+    .duration(1000)
+    .attr("cy", (d) => {
+      return yScale(d.eu);
+    });
+
+  let euSales = euSalesLine(xScale, yScale);
+
+  alterandoLinha(incomingData, euSales);
 }
 
 function globalSalesLine(xScale, yScale) {
@@ -134,84 +214,13 @@ function euSalesLine(xScale, yScale) {
   return euSales;
 }
 
-function desenhandoLinha(dadosMedidos, sales) {
-  select("svg.line-graph")
-    .append("path")
-    .attr("class", "line-globalsales")
-    .attr("d", sales(dadosMedidos));
-  select(".global-sales").classed("selected", true);
-}
-
 function alterandoLinha(dadosMedidos, sales) {
   select("path").transition().duration(1000).attr("d", sales(dadosMedidos));
 }
 
-function medindoVendasAnuais(data) {
-  let dadosMedidos = [];
-  data.forEach((element) => {
-    let resultado;
-    resultado = dadosMedidos.find((el) => {
-      return el.ano == +element.Year_of_Release;
-    });
-
-    if (resultado) {
-      resultado.total += +element.Global_Sales;
-      resultado.na += +element.NA_Sales;
-      resultado.eu += +element.EU_Sales;
-    } else if (!isNaN(+element.Year_of_Release)) {
-      resultado = {};
-      resultado.total = +element.Global_Sales;
-      resultado.ano = +element.Year_of_Release;
-      resultado.na = +element.NA_Sales;
-      resultado.eu = +element.EU_Sales;
-      dadosMedidos.push(resultado);
-    }
+function destacandoButton(alvo, anteriores) {
+  select(alvo).classed("selected", true);
+  anteriores.forEach((el) => {
+    select(el).classed("selected", false);
   });
-
-  dadosMedidos = dadosMedidos.sort((a, b) => {
-    return a.ano > b.ano;
-  });
-  return dadosMedidos;
-}
-
-function northAmericanSales(incomingData, xScale, yScale) {
-  select("svg.line-graph")
-    .selectAll("circle.scatterplot")
-    .transition()
-    .duration(1000)
-    .attr("cy", (d) => {
-      return yScale(d.na);
-    });
-
-  let naSales = naSalesLine(xScale, yScale);
-
-  alterandoLinha(incomingData, naSales);
-}
-
-function globalSalesData(incomingData, xScale, yScale) {
-  select("svg.line-graph")
-    .selectAll("circle.scatterplot")
-    .transition()
-    .duration(1000)
-    .attr("cy", (d) => {
-      return yScale(d.total);
-    });
-
-  let globalSales = globalSalesLine(xScale, yScale);
-
-  alterandoLinha(incomingData, globalSales);
-}
-
-function europeanSales(incomingData, xScale, yScale) {
-  select("svg.line-graph")
-    .selectAll("circle.scatterplot")
-    .transition()
-    .duration(1000)
-    .attr("cy", (d) => {
-      return yScale(d.eu);
-    });
-
-  let euSales = euSalesLine(xScale, yScale);
-
-  alterandoLinha(incomingData, euSales);
 }
