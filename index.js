@@ -82,6 +82,10 @@ function lineChart(incomingData) {
   select(".global-sales").on("click", (d) => {
     globalSalesData(dadosMedidos, xScale, yScale);
   });
+
+  select(".eu-sales").on("click", (d) => {
+    europeanSales(dadosMedidos, xScale, yScale);
+  });
 }
 
 function globalSalesLine(xScale, yScale) {
@@ -106,6 +110,18 @@ function naSalesLine(xScale, yScale) {
     });
 
   return naSales;
+}
+
+function euSalesLine(xScale, yScale) {
+  let euSales = line()
+    .x((d) => {
+      return xScale(d.ano);
+    })
+    .y((d) => {
+      return yScale(d.eu);
+    });
+
+  return euSales;
 }
 
 function desenhandoLinha(dadosMedidos, sales) {
@@ -173,4 +189,18 @@ function globalSalesData(incomingData, xScale, yScale) {
   let globalSales = globalSalesLine(xScale, yScale);
 
   alterandoLinha(incomingData, globalSales);
+}
+
+function europeanSales(incomingData, xScale, yScale) {
+  select("svg.line-graph")
+    .selectAll("circle.scatterplot")
+    .transition()
+    .duration(1000)
+    .attr("cy", (d) => {
+      return yScale(d.eu);
+    });
+
+  let euSales = euSalesLine(xScale, yScale);
+
+  alterandoLinha(incomingData, euSales);
 }
