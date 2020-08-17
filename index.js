@@ -256,13 +256,13 @@ function litleLineChart(incomingData) {
   let propriedadesDoObjeto = ["Global", "NA", "EU", "JP"];
   let dado = medirVendasDasPublicadoras("Capcom", incomingData);
   let xScale = scaleBand().domain(propriedadesDoObjeto).range([10, 200]);
-  let yScale = scaleLinear().domain([0, dado.global]).range([180, 10]);
+  let yScale = scaleLinear().domain([0, 2000]).range([180, 10]);
   let xAxis = axisBottom(xScale).tickSize(-180);
   let yAxis = axisLeft(yScale);
 
   let everySales = line()
     .x((d, i) => {
-      return xScale(propriedadesDoObjeto[i]) + 63;
+      return xScale(propriedadesDoObjeto[i]) + 65;
     })
     .y((d) => {
       return yScale(d);
@@ -279,7 +279,7 @@ function litleLineChart(incomingData) {
   select("svg.line-graph-small")
     .append("g")
     .attr("class", "line-group")
-    .attr("transform", "translate(40, 0)")
+    .attr("transform", "translate(50, 0)")
     .call(yAxis)
     .select(".domain")
     .remove();
@@ -312,49 +312,37 @@ function litleLineChart(incomingData) {
     .attr("class", "line-every-sales")
     .attr("d", everySales(valoresDoObjeto));
 
-  selecionarPublicadora(
-    incomingData,
-    everySales,
-    valoresDoObjeto,
-    propriedadesDoObjeto
-  );
-}
-
-function selecionarPublicadora(incomingData, everySales, propriedadesDoObjeto) {
   let selectElement = document.querySelector(".publicadoras");
-  let publicadora = "Capcom";
-  let valoresDoObjeto = [];
-  let dado;
 
   selectElement.addEventListener("change", (event) => {
-    publicadora = event.target.value;
+    let publicadora = event.target.value;
+    let novoValoresDoObjeto = [];
+
     dado = medirVendasDasPublicadoras(publicadora, incomingData);
 
     for (let property in dado) {
       if (!isNaN(+dado[property])) {
-        valoresDoObjeto.push(dado[property]);
+        novoValoresDoObjeto.push(dado[property]);
       }
     }
 
-    // select("svg.line-graph-small")
-    //   .selectAll("circle")
-    //   .data(valoresDoObjeto)
-    //   .enter()
-    //   .append("circle")
-    //   .attr("class", "scatterplot")
-    //   .attr("cx", (d, i) => {
-    //     return xScale(propriedadesDoObjeto[i]) + 63;
-    //   })
-    //   .attr("cy", (d) => {
-    //     return yScale(d);
-    //   })
-    //   .attr("r", 5)
-    //   .attr("fill", "white");
+    console.log(novoValoresDoObjeto);
 
-    // select(".line-every-sales")
-    //   .transition()
-    //   .duration(1000)
-    //   .attr("d", everySales(valoresDoObjeto));
+    select("svg.line-graph-small")
+      .selectAll("circle")
+      .data(novoValoresDoObjeto)
+      .transition()
+      .duration(1000)
+      .attr("cy", (d) => {
+        return yScale(d);
+      })
+      .attr("r", 5)
+      .attr("fill", "white");
+
+    select(".line-every-sales")
+      .transition()
+      .duration(1000)
+      .attr("d", everySales(novoValoresDoObjeto));
   });
 }
 
