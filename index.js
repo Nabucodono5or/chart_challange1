@@ -126,8 +126,10 @@ function medirVendasAnuais(data) {
   });
 
   dadosMedidos = dadosMedidos.sort((a, b) => {
-    return a.ano > b.ano;
+    return a.ano - b.ano;
   });
+
+  console.log(dadosMedidos);
   return dadosMedidos;
 }
 
@@ -280,6 +282,10 @@ function litleLineChart(incomingData) {
     .attr("class", "line-every-sales")
     .attr("d", everySales(valoresDoObjeto));
 
+  addEventToSelect(incomingData, yValue, everySales, dado);
+}
+
+function addEventToSelect(incomingData, yValue, everySales, dado) {
   let selectElement = document.querySelector(".publicadoras");
 
   selectElement.addEventListener("change", (event) => {
