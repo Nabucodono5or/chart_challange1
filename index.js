@@ -38,17 +38,21 @@ csv(
 });
 
 function lineChart(incomingData) {
+  let xValue = (d) => xScale(d.ano);
+  let yValueTotal = (d) => yScale(d.total);
+  let yValueEu = (d) => yScale(d.eu);
+  let yValueNa = (d) => yScale(d.na);
+
   let dadosMedidos = medirVendasAnuais(incomingData);
   let minimoMaximoAnoDeLancamento = medirAnoDeLancamento(dadosMedidos);
   let minimoMaximoDeVendas = medirTotalDeVendas(dadosMedidos);
-
   let xScale = scaleLinear()
     .domain(minimoMaximoAnoDeLancamento)
     .range([90, 720]);
   let yScale = scaleLinear().domain(minimoMaximoDeVendas).range([280, 20]);
   let xAxis = axisBottom(xScale).tickSize(-280).tickPadding(10);
   let yAxis = axisLeft(yScale).tickSize(0);
-  let globalSales = globalSalesLine(xScale, yScale);
+  let globalSales = globalSalesLine(xValue, yValueTotal);
 
   globalSales.curve(curveNatural);
 
@@ -74,12 +78,8 @@ function lineChart(incomingData) {
     .enter()
     .append("circle")
     .attr("class", "scatterplot")
-    .attr("cx", (d) => {
-      return xScale(d.ano);
-    })
-    .attr("cy", (d) => {
-      return yScale(d.total);
-    })
+    .attr("cx", xValue)
+    .attr("cy", yValueTotal)
     .attr("r", 5)
     .attr("fill", "white");
 
@@ -88,17 +88,17 @@ function lineChart(incomingData) {
   // criar os eventos
 
   select(".na-sales").on("click", (d) => {
-    northAmericanSales(dadosMedidos, xScale, yScale);
+    northAmericanSales(dadosMedidos, xValue, yValueNa);
     destacandoButton(".na-sales", [".eu-sales", ".global-sales"]);
   });
 
   select(".global-sales").on("click", (d) => {
-    globalSalesData(dadosMedidos, xScale, yScale);
+    globalSalesData(dadosMedidos, xValue, yValueTotal);
     destacandoButton(".global-sales", [".eu-sales", ".na-sales"]);
   });
 
   select(".eu-sales").on("click", (d) => {
-    europeanSales(dadosMedidos, xScale, yScale);
+    europeanSales(dadosMedidos, xValue, yValueEu);
     destacandoButton(".eu-sales", [".global-sales", ".na-sales"]);
   });
 }
@@ -155,80 +155,56 @@ function desenhandoLinha(dadosMedidos, sales) {
   select(".global-sales").classed("selected", true);
 }
 
-function globalSalesData(incomingData, xScale, yScale) {
+function globalSalesData(incomingData, xValue, yValue) {
   select("svg.line-graph")
     .selectAll("circle.scatterplot")
     .transition()
     .duration(1000)
-    .attr("cy", (d) => {
-      return yScale(d.total);
-    });
+    .attr("cy", yValue);
 
-  let globalSales = globalSalesLine(xScale, yScale);
+  let globalSales = globalSalesLine(xValue, yValue);
 
   alterandoLinha(incomingData, globalSales);
 }
 
-function northAmericanSales(incomingData, xScale, yScale) {
+function northAmericanSales(incomingData, xValue, yValue) {
   select("svg.line-graph")
     .selectAll("circle.scatterplot")
     .transition()
     .duration(1000)
-    .attr("cy", (d) => {
-      return yScale(d.na);
-    });
+    .attr("cy", yValue);
 
-  let naSales = naSalesLine(xScale, yScale);
+  let naSales = naSalesLine(xValue, yValue);
 
   alterandoLinha(incomingData, naSales);
 }
 
-function europeanSales(incomingData, xScale, yScale) {
+function europeanSales(incomingData, xValue, yValue) {
   select("svg.line-graph")
     .selectAll("circle.scatterplot")
     .transition()
     .duration(1000)
-    .attr("cy", (d) => {
-      return yScale(d.eu);
-    });
+    .attr("cy", yValue);
 
-  let euSales = euSalesLine(xScale, yScale);
+  let euSales = euSalesLine(xValue, yValue);
 
   alterandoLinha(incomingData, euSales);
 }
 
-function globalSalesLine(xScale, yScale) {
-  let globalSales = line()
-    .x((d) => {
-      return xScale(d.ano);
-    })
-    .y((d) => {
-      return yScale(d.total);
-    });
+function globalSalesLine(xValue, yValue) {
+  let globalSales = line().x(xValue).y(yValue);
 
   return globalSales;
 }
 
-function naSalesLine(xScale, yScale) {
-  let naSales = line()
-    .x((d) => {
-      return xScale(d.ano);
-    })
-    .y((d) => {
-      return yScale(d.na);
-    });
+function naSalesLine(xValue, yValue) {
+  let naSales = line().x(xValue).y(yValue);
 
   return naSales;
 }
 
-function euSalesLine(xScale, yScale) {
-  let euSales = line()
-    .x((d) => {
-      return xScale(d.ano);
-    })
-    .y((d) => {
-      return yScale(d.eu);
-    });
+function euSalesLine(xValue, yValue) {
+  let euSales = line().x(xValue).y(yValue);
 
   return euSales;
 }
