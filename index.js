@@ -4,7 +4,7 @@ import { extent } from "d3-array";
 import { scaleLinear, scaleBand } from "d3-scale";
 import { axisLeft, axisRight, axisBottom, axisTop } from "d3-axis";
 import { line, curveNatural } from "d3-shape";
-import { randomLogNormal } from "d3";
+import { randomLogNormal, max } from "d3";
 
 select("div.chart")
   .append("svg")
@@ -35,6 +35,7 @@ csv(
 ).then((data) => {
   lineChart(data);
   litleLineChart(data);
+  barChart(data);
 });
 
 function lineChart(incomingData) {
@@ -129,7 +130,6 @@ function medirVendasAnuais(data) {
     return a.ano - b.ano;
   });
 
-  console.log(dadosMedidos);
   return dadosMedidos;
 }
 
@@ -337,4 +337,37 @@ function medirVendasDasPublicadoras(publicadora, incomingData) {
   });
 
   return resultado;
+}
+
+// ---------------------------------------------------------------------------//
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// ---------------------- histogram chart ------------------------------------//
+
+function barChart(incomingData) {
+  let valoresDoObjeto = [];
+  let publicadoras = ["Ubisoft", "Nintendo", "Sega", "Capcom"];
+
+  valoresDoObjeto = mapeandoPublicadoras(incomingData, publicadoras);
+
+  let maximoGlobalSales = max(valoresDoObjeto, (d) => d.global);
+  console.log(valoresDoObjeto);
+  let xScale = scaleBand().domain(publicadoras).range([10, 200]);
+  let yScale = scaleLinear().domain([0, maximoGlobalSales]).range([180, 10]);
+  let xAxis = axisBottom(xScale).tickSize(-180);
+  let yAxis = axisLeft(yScale);
+  let xValue = (d, i) => xScale.bandwidth();
+  let yValue = (d) => yScale(d);
+
+    
+}
+
+function mapeandoPublicadoras(incomingData, publicadoras) {
+  let valoresDoObjeto = [];
+
+  publicadoras.map((p) => {
+    let dado = medirVendasDasPublicadoras(p, incomingData);
+    valoresDoObjeto.push(dado);
+  });
+
+  return valoresDoObjeto;
 }
