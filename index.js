@@ -235,14 +235,10 @@ function litleLineChart(incomingData) {
   let yScale = scaleLinear().domain([0, 2000]).range([180, 10]);
   let xAxis = axisBottom(xScale).tickSize(-180);
   let yAxis = axisLeft(yScale);
+  let xValue = (d, i) => xScale(propriedadesDoObjeto[i]) + 65;
+  let yValue = (d) => yScale(d);
 
-  let everySales = line()
-    .x((d, i) => {
-      return xScale(propriedadesDoObjeto[i]) + 65;
-    })
-    .y((d) => {
-      return yScale(d);
-    });
+  let everySales = line().x(xValue).y(yValue);
 
   select("svg.line-graph-small")
     .append("g")
@@ -272,12 +268,8 @@ function litleLineChart(incomingData) {
     .enter()
     .append("circle")
     .attr("class", "scatterplot")
-    .attr("cx", (d, i) => {
-      return xScale(propriedadesDoObjeto[i]) + 63;
-    })
-    .attr("cy", (d) => {
-      return yScale(d);
-    })
+    .attr("cx", xValue)
+    .attr("cy", yValue)
     .attr("r", 5)
     .attr("fill", "white");
 
@@ -309,9 +301,7 @@ function litleLineChart(incomingData) {
       .data(novoValoresDoObjeto)
       .transition()
       .duration(1000)
-      .attr("cy", (d) => {
-        return yScale(d);
-      })
+      .attr("cy", yValue)
       .attr("r", 5)
       .attr("fill", "white");
 
