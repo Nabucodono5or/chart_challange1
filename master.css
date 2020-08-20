@@ -62,9 +62,10 @@ div.performance {
 }
 
 .title {
-  color: aliceblue;
+  color: #fff;
   font-size: 1.5em;
   font-weight: normal;
+  margin-bottom: 0em;
 }
 
 .text-title {
@@ -86,6 +87,14 @@ div.performance {
   stroke-width: 3px;
   stroke: aliceblue;
   fill: none;
+}
+
+.performance text {
+  color: aliceblue;
+}
+
+.performance .tick line {
+  stroke: #ff87ab;
 }
 
 section {
@@ -110,7 +119,29 @@ section {
   margin-top: 1em;
 }
 
+.total-shipments .tick line {
+  color: #ff87ab;
+}
+
 .line-every-sales {
   fill: none;
   stroke: aliceblue;
+}
+
+.char-histogram {
+  padding: 0.8em;
+  padding-left: 0em;
+  padding-top: 0;
+}
+
+.daily-sales .tick line {
+  color: #ff87ab;
+}
+
+.bar-graph {
+  margin-top: 0em;
+}
+
+.bar-group {
+  color: aliceblue;
 }

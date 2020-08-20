@@ -6,29 +6,34 @@ import { axisLeft, axisRight, axisBottom, axisTop } from "d3-axis";
 import { line, curveNatural } from "d3-shape";
 import { randomLogNormal, max } from "d3";
 
+const widthChart = 800;
+const heightChart = 300;
+const widthSmallBlock = 250;
+const heightSmallBlock = 250;
+
 select("div.chart")
   .append("svg")
   .attr("class", "line-graph")
-  .attr("height", "300px")
-  .attr("width", "800px");
+  .attr("height", heightChart)
+  .attr("width", widthChart);
 
 select("div.chart-line-small")
   .append("svg")
   .attr("class", "line-graph-small")
-  .attr("height", "200px")
-  .attr("width", "250px");
+  .attr("height", heightSmallBlock)
+  .attr("width", widthSmallBlock);
 
 select("div.char-histogram")
   .append("svg")
-  .attr("class", "line-graph")
-  .attr("height", "200px")
-  .attr("width", "220px");
+  .attr("class", "bar-graph")
+  .attr("height", heightSmallBlock)
+  .attr("width", widthSmallBlock);
 
 select("div.chart-line-small-second")
   .append("svg")
   .attr("class", "line-graph")
-  .attr("height", "200px")
-  .attr("width", "220px");
+  .attr("height", heightSmallBlock)
+  .attr("width", widthSmallBlock);
 
 csv(
   require("./data/189386_422697_bundle_archive/Video_Games_Sales_as_at_22_Dec_2016.csv")
@@ -236,7 +241,7 @@ function litleLineChart(incomingData) {
   let xScale = scaleBand().domain(propriedadesDoObjeto).range([10, 200]);
   let yScale = scaleLinear().domain([0, 2000]).range([180, 10]);
   let xAxis = axisBottom(xScale).tickSize(-180);
-  let yAxis = axisLeft(yScale);
+  let yAxis = axisLeft(yScale).tickSize(0);
   let xValue = (d, i) => xScale(propriedadesDoObjeto[i]) + 65;
   let yValue = (d) => yScale(d);
 
@@ -352,13 +357,32 @@ function barChart(incomingData) {
   let maximoGlobalSales = max(valoresDoObjeto, (d) => d.global);
   console.log(valoresDoObjeto);
   let xScale = scaleBand().domain(publicadoras).range([10, 200]);
-  let yScale = scaleLinear().domain([0, maximoGlobalSales]).range([180, 10]);
-  let xAxis = axisBottom(xScale).tickSize(-180);
-  let yAxis = axisLeft(yScale);
+  let yScale = scaleLinear()
+    .domain([0, maximoGlobalSales])
+    .range([180, 10])
+    .nice();
+  let xAxis = axisBottom(xScale).tickSize(-widthSmallBlock).tickPadding(10);
+  let yAxis = axisLeft(yScale).tickSize(-heightSmallBlock).tickPadding(8);
   let xValue = (d, i) => xScale.bandwidth();
   let yValue = (d) => yScale(d);
 
-    
+  let xAxisG = select("svg.bar-graph")
+    .append("g")
+    .attr("class", "bar-group")
+    .attr("transform", "translate(40, 180)")
+    .call(xAxis);
+
+  xAxisG.select(".domain").remove();
+
+  let yAxisG = select("svg.bar-graph")
+    .append("g")
+    .attr("class", "bar-group")
+    .attr("transform", "translate(50, 0)")
+    .call(yAxis);
+
+  yAxisG.select(".domain").remove();
+
+  // xAxisG.selectAll(".tick").selectAll("text").attr("transform", "rotate(45)");
 }
 
 function mapeandoPublicadoras(incomingData, publicadoras) {
