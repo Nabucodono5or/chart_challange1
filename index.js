@@ -1,6 +1,6 @@
 import { select, selectAll } from "d3-selection";
 import { csv } from "d3-fetch";
-import { extent } from "d3-array";
+import { extent, histogram } from "d3-array";
 import { scaleLinear, scaleBand } from "d3-scale";
 import { axisLeft, axisRight, axisBottom, axisTop } from "d3-axis";
 import { line, curveNatural } from "d3-shape";
@@ -382,7 +382,28 @@ function barChart(incomingData) {
 
   yAxisG.select(".domain").remove();
 
-  // xAxisG.selectAll(".tick").selectAll("text").attr("transform", "rotate(45)");
+  xAxisG
+    .selectAll(".tick")
+    .selectAll("text")
+    // .attr("transform", "rotate(45)")
+    .attr("class", "label-bar");
+
+  let histoChart = histogram().value(function (d) {
+    return d.global;
+  });
+
+  let histoData = histoChart(valoresDoObjeto);
+
+  console.log(histoData);
+  // select("svg.bar-graph")
+  //   .selectAll("rect")
+  //   .data(histoData)
+  //   .enter()
+  //   .append("rect")
+  //   .attr("x", (d) => xScale(d.x))
+  //   .attr("y", (d) => yScale(d.y))
+  //   .attr("width", xValue)
+  //   .attr("height", (d) => heightSmallBlock - yScale(d.y));
 }
 
 function mapeandoPublicadoras(incomingData, publicadoras) {

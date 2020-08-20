@@ -145,3 +145,7 @@ section {
 .bar-group {
   color: aliceblue;
 }
+
+.label-bar {
+  font-size: 1.3em;
+}
