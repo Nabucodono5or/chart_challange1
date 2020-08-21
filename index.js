@@ -1,6 +1,7 @@
 import { select, selectAll } from "d3-selection";
+import { scaleOrdinal } from "d3-scale";
 import { csv } from "d3-fetch";
-import { extent, histogram } from "d3-array";
+import { extent } from "d3-array";
 import { scaleLinear, scaleBand } from "d3-scale";
 import { axisLeft, axisRight, axisBottom, axisTop } from "d3-axis";
 import { line, curveNatural } from "d3-shape";
@@ -355,16 +356,17 @@ function barChart(incomingData) {
   valoresDoObjeto = mapeandoPublicadoras(incomingData, publicadoras);
 
   let maximoGlobalSales = max(valoresDoObjeto, (d) => d.global);
-  console.log(valoresDoObjeto);
+
   let xScale = scaleBand().domain(publicadoras).range([10, 200]);
   let yScale = scaleLinear()
-    .domain([0, maximoGlobalSales])
-    .range([180, 10])
+    .domain([maximoGlobalSales, 0])
+    .range([10, 180])
     .nice();
+
   let xAxis = axisBottom(xScale).tickSize(-widthSmallBlock).tickPadding(10);
   let yAxis = axisLeft(yScale).tickSize(-heightSmallBlock).tickPadding(8);
-  let xValue = (d, i) => xScale.bandwidth();
-  let yValue = (d) => yScale(d);
+  let xValue = (d, i) => xScale.bandwidth() * i + 65;
+  let yValue = (d) => yScale(d.global);
 
   let xAxisG = select("svg.bar-graph")
     .append("g")
@@ -388,22 +390,16 @@ function barChart(incomingData) {
     // .attr("transform", "rotate(45)")
     .attr("class", "label-bar");
 
-  let histoChart = histogram().value(function (d) {
-    return d.global;
-  });
-
-  let histoData = histoChart(valoresDoObjeto);
-
-  console.log(histoData);
-  // select("svg.bar-graph")
-  //   .selectAll("rect")
-  //   .data(histoData)
-  //   .enter()
-  //   .append("rect")
-  //   .attr("x", (d) => xScale(d.x))
-  //   .attr("y", (d) => yScale(d.y))
-  //   .attr("width", xValue)
-  //   .attr("height", (d) => heightSmallBlock - yScale(d.y));
+  select("svg.bar-graph")
+    .selectAll("rect")
+    .data(valoresDoObjeto)
+    .enter()
+    .append("rect")
+    .attr("x", xValue)
+    .attr("y", (d) => 180 - yValue(d))
+    .attr("width", 15)
+    .attr("height", yValue)
+    .attr("class", "rectangle-bar");
 }
 
 function mapeandoPublicadoras(incomingData, publicadoras) {

@@ -84,7 +84,7 @@ div.performance {
 }
 
 .line-globalsales {
-  stroke-width: 3px;
+  stroke-width: 2px;
   stroke: aliceblue;
   fill: none;
 }
@@ -147,5 +147,9 @@ section {
 }
 
 .label-bar {
-  font-size: 1.3em;
+  font-size: 1em;
+}
+
+.rectangle-bar {
+  fill: aliceblue;
 }
