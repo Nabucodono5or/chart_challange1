@@ -42,6 +42,7 @@ csv(
   lineChart(data);
   litleLineChart(data);
   barChart(data);
+  litleLineChartB(data);
 });
 
 function lineChart(incomingData) {
@@ -306,8 +307,6 @@ function addEventToSelect(incomingData, yValue, everySales, dado) {
       }
     }
 
-    console.log(novoValoresDoObjeto);
-
     select("svg.line-graph-small")
       .selectAll("circle")
       .data(novoValoresDoObjeto)
@@ -411,4 +410,35 @@ function mapeandoPublicadoras(incomingData, publicadoras) {
   });
 
   return valoresDoObjeto;
+}
+
+// ---------------------------------------------------------------------------//
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// ---------------------- line chart second chart ------------------------------------//
+
+function litleLineChartB(incomingData) {
+  medirMediaDasPublicadoras("Capcom", incomingData);
+}
+
+function medirMediaDasPublicadoras(publicadora, incomingData) {
+  let dado = medirVendasDasPublicadoras(publicadora, incomingData);
+
+  dado.total = 0;
+  dado.mediaGlobal = 0;
+  dado.mediaNa = 0;
+  dado.mediaEu = 0;
+  dado.mediaJp = 0;
+
+  incomingData.forEach((element) => {
+    if (element.Publisher == publicadora) {
+      dado.total += 1;
+    }
+  });
+
+  dado.mediaGlobal = dado.global / dado.total;
+  dado.mediaEu = dado.eu / dado.total;
+  dado.mediaNa = dado.na / dado.total;
+  dado.mediaJp = dado.jp / dado.total;
+
+  console.log(dado);
 }
