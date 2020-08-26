@@ -11,7 +11,7 @@ const widthChart = 800;
 const heightChart = 300;
 const widthSmallBlock = 250;
 const heightSmallBlock = 250;
-const margin = { top: 20, left: 30, right: 10, bottom: 40 };
+const margin = { top: 10, left: 30, right: 10, bottom: 40 };
 
 select("div.chart")
   .append("svg")
@@ -425,37 +425,61 @@ function litleLineChartB(incomingData) {
   let innerHeight = heightSmallBlock - margin.top - margin.bottom;
   let innerWidth = widthSmallBlock - margin.left - margin.right;
 
-  let xScale = scaleBand()
-    .domain(propriedadesDoObjeto)
-    .range([0, innerWidth]);
-  let yScale = scaleLinear().domain([0, 1]).range([innerHeight, 10]);
+  let xScale = scaleBand().domain(propriedadesDoObjeto).range([0, innerWidth]);
+  let yScale = scaleLinear().domain([0, 1]).range([innerHeight, 0]);
 
-  let xAxis = axisBottom(xScale).tickSize(-innerWidth);
+  let xAxis = axisBottom(xScale).tickSize(-innerWidth).tickPadding(10);
   let yAxis = axisLeft(yScale).ticks(4).tickSize(0);
 
-  let xValue = (d, i) => xScale(propriedadesDoObjeto[i]);
+  let xValue = (d, i) => xScale(propriedadesDoObjeto[i]) + margin.left - 3;
   let yValue = (d) => yScale(d);
 
   let everySales = line().x(xValue).y(yValue);
 
-  select("svg.line-graph-second")
+  const g = select("svg.line-graph-second")
     .append("g")
+    .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+  g.append("g")
     .attr("class", "line-group-second")
-    .attr("transform", `translate(${margin.left}, ${innerHeight})`)
+    .attr("transform", `translate(${0}, ${innerHeight})`)
     .call(xAxis)
     .select(".domain")
     .remove();
 
-  select("svg.line-graph-second")
-    .append("g")
+  g.append("g")
     .attr("class", "line-group-second")
-    .attr("transform", `translate(${margin.left}, ${0})`)
+    .attr("transform", `translate(${0}, ${0})`)
     .call(yAxis)
     .select(".domain")
     .remove();
 
   valoresDoObjeto = criarArrayDasMedias(dado);
-  console.log(valoresDoObjeto);
+
+  g.selectAll("circle")
+    .data(valoresDoObjeto)
+    .enter()
+    .append("circle")
+    .attr("class", "scatterplot")
+    .attr("cx", xValue)
+    .attr("cy", yValue)
+    .attr("r", 5)
+    .attr("fill", "white");
+
+  everySales.curve(curveNatural);
+
+  g.append("path")
+    .attr("class", "line-every-sales")
+    .attr("d", everySales(valoresDoObjeto));
+
+  let selectElement = document.querySelector(".publicadoras-2");
+
+  selectElement.addEventListener("change", (event) => {
+    let publicadora = event.target.value;
+
+    dado = medirMediaDasPublicadoras(publicadora, incomingData);
+    valoresDoObjeto = criarArrayDasMedias(dado);
+  });
 }
 
 function medirMediaDasPublicadoras(publicadora, incomingData) {
@@ -491,3 +515,34 @@ function criarArrayDasMedias(dado) {
 
   return valoresDoObjeto;
 }
+
+// function addEventToSelectMedia(dado, yValue, everySales, dado) {
+//   let selectElement = document.querySelector(".publicadoras");
+
+//   selectElement.addEventListener("change", (event) => {
+//     let publicadora = event.target.value;
+//     let novoValoresDoObjeto = [];
+
+//     dado = medirVendasDasPublicadoras(publicadora, incomingData);
+
+//     for (let property in dado) {
+//       if (!isNaN(+dado[property])) {
+//         novoValoresDoObjeto.push(dado[property]);
+//       }
+//     }
+
+//     select("svg.line-graph-small")
+//       .selectAll("circle")
+//       .data(novoValoresDoObjeto)
+//       .transition()
+//       .duration(1000)
+//       .attr("cy", yValue)
+//       .attr("r", 5)
+//       .attr("fill", "white");
+
+//     select(".line-every-sales")
+//       .transition()
+//       .duration(1000)
+//       .attr("d", everySales(novoValoresDoObjeto));
+//   });
+// }
