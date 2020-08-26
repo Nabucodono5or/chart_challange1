@@ -11,6 +11,7 @@ const widthChart = 800;
 const heightChart = 300;
 const widthSmallBlock = 250;
 const heightSmallBlock = 250;
+const margin = { top: 20, left: 30, right: 10, bottom: 40 };
 
 select("div.chart")
   .append("svg")
@@ -32,7 +33,7 @@ select("div.char-histogram")
 
 select("div.chart-line-small-second")
   .append("svg")
-  .attr("class", "line-graph")
+  .attr("class", "line-graph-second")
   .attr("height", heightSmallBlock)
   .attr("width", widthSmallBlock);
 
@@ -417,28 +418,76 @@ function mapeandoPublicadoras(incomingData, publicadoras) {
 // ---------------------- line chart second chart ------------------------------------//
 
 function litleLineChartB(incomingData) {
-  medirMediaDasPublicadoras("Capcom", incomingData);
+  let dado = medirMediaDasPublicadoras("Capcom", incomingData);
+
+  let valoresDoObjeto = [];
+  let propriedadesDoObjeto = ["Global", "NA", "EU", "JP"];
+  let innerHeight = heightSmallBlock - margin.top - margin.bottom;
+  let innerWidth = widthSmallBlock - margin.left - margin.right;
+
+  let xScale = scaleBand()
+    .domain(propriedadesDoObjeto)
+    .range([0, innerWidth]);
+  let yScale = scaleLinear().domain([0, 1]).range([innerHeight, 10]);
+
+  let xAxis = axisBottom(xScale).tickSize(-innerWidth);
+  let yAxis = axisLeft(yScale).ticks(4).tickSize(0);
+
+  let xValue = (d, i) => xScale(propriedadesDoObjeto[i]);
+  let yValue = (d) => yScale(d);
+
+  let everySales = line().x(xValue).y(yValue);
+
+  select("svg.line-graph-second")
+    .append("g")
+    .attr("class", "line-group-second")
+    .attr("transform", `translate(${margin.left}, ${innerHeight})`)
+    .call(xAxis)
+    .select(".domain")
+    .remove();
+
+  select("svg.line-graph-second")
+    .append("g")
+    .attr("class", "line-group-second")
+    .attr("transform", `translate(${margin.left}, ${0})`)
+    .call(yAxis)
+    .select(".domain")
+    .remove();
+
+  valoresDoObjeto = criarArrayDasMedias(dado);
+  console.log(valoresDoObjeto);
 }
 
 function medirMediaDasPublicadoras(publicadora, incomingData) {
   let dado = medirVendasDasPublicadoras(publicadora, incomingData);
-
-  dado.total = 0;
-  dado.mediaGlobal = 0;
-  dado.mediaNa = 0;
-  dado.mediaEu = 0;
-  dado.mediaJp = 0;
+  let novoDado = {};
+  novoDado.total = 0;
+  novoDado.mediaGlobal = 0;
+  novoDado.mediaNa = 0;
+  novoDado.mediaEu = 0;
+  novoDado.mediaJp = 0;
 
   incomingData.forEach((element) => {
     if (element.Publisher == publicadora) {
-      dado.total += 1;
+      novoDado.total += 1;
     }
   });
 
-  dado.mediaGlobal = dado.global / dado.total;
-  dado.mediaEu = dado.eu / dado.total;
-  dado.mediaNa = dado.na / dado.total;
-  dado.mediaJp = dado.jp / dado.total;
+  novoDado.mediaGlobal = dado.global / novoDado.total;
+  novoDado.mediaEu = dado.eu / novoDado.total;
+  novoDado.mediaNa = dado.na / novoDado.total;
+  novoDado.mediaJp = dado.jp / novoDado.total;
 
-  console.log(dado);
+  return novoDado;
+}
+
+function criarArrayDasMedias(dado) {
+  let valoresDoObjeto = [];
+  for (let property in dado) {
+    if (!isNaN(+dado[property]) && property != "total") {
+      valoresDoObjeto.push(dado[property]);
+    }
+  }
+
+  return valoresDoObjeto;
 }
