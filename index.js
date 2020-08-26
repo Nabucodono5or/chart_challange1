@@ -426,10 +426,10 @@ function litleLineChartB(incomingData) {
   let innerWidth = widthSmallBlock - margin.left - margin.right;
 
   let xScale = scaleBand().domain(propriedadesDoObjeto).range([0, innerWidth]);
-  let yScale = scaleLinear().domain([0, 1]).range([innerHeight, 0]);
+  let yScale = scaleLinear().domain([0, 3]).range([innerHeight, 0]);
 
   let xAxis = axisBottom(xScale).tickSize(-innerWidth).tickPadding(10);
-  let yAxis = axisLeft(yScale).ticks(4).tickSize(0);
+  let yAxis = axisLeft(yScale).ticks(8).tickSize(0);
 
   let xValue = (d, i) => xScale(propriedadesDoObjeto[i]) + margin.left - 3;
   let yValue = (d) => yScale(d);
@@ -479,6 +479,18 @@ function litleLineChartB(incomingData) {
 
     dado = medirMediaDasPublicadoras(publicadora, incomingData);
     valoresDoObjeto = criarArrayDasMedias(dado);
+
+    console.log(valoresDoObjeto);
+    g.selectAll("circle")
+      .data(valoresDoObjeto)
+      .transition()
+      .duration(1000)
+      .attr("cy", yValue);
+
+    g.select(".line-every-sales")
+      .transition()
+      .duration(1000)
+      .attr("d", everySales(valoresDoObjeto));
   });
 }
 
