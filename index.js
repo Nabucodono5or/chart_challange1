@@ -89,7 +89,7 @@ function lineChart(incomingData) {
     .attr("class", "scatterplot")
     .attr("cx", xValue)
     .attr("cy", yValueTotal)
-    .attr("r", 5)
+    .attr("r", 3)
     .attr("fill", "white");
 
   desenhandoLinha(dadosMedidos, globalSales);
@@ -527,34 +527,3 @@ function criarArrayDasMedias(dado) {
 
   return valoresDoObjeto;
 }
-
-// function addEventToSelectMedia(dado, yValue, everySales, dado) {
-//   let selectElement = document.querySelector(".publicadoras");
-
-//   selectElement.addEventListener("change", (event) => {
-//     let publicadora = event.target.value;
-//     let novoValoresDoObjeto = [];
-
-//     dado = medirVendasDasPublicadoras(publicadora, incomingData);
-
-//     for (let property in dado) {
-//       if (!isNaN(+dado[property])) {
-//         novoValoresDoObjeto.push(dado[property]);
-//       }
-//     }
-
-//     select("svg.line-graph-small")
-//       .selectAll("circle")
-//       .data(novoValoresDoObjeto)
-//       .transition()
-//       .duration(1000)
-//       .attr("cy", yValue)
-//       .attr("r", 5)
-//       .attr("fill", "white");
-
-//     select(".line-every-sales")
-//       .transition()
-//       .duration(1000)
-//       .attr("d", everySales(novoValoresDoObjeto));
-//   });
-// }
